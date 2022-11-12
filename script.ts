@@ -14,7 +14,7 @@ async function main() {
 		const responses = (
 			await Promise.all(
 				apps
-					.slice(0, 100)
+					.slice(0, 250)
 					.map(
 						async (app: any) => (await axios.get(appDetailsUrl + app.appid)).data[app.appid]?.data
 					)
@@ -23,6 +23,7 @@ async function main() {
 		const apps_details = responses.map((app) => ({
 			appid: app.steam_appid,
 			type: app.type,
+			release_date: app.release_date.date,
 			price: app.is_free ? 0 : app.price_overview?.initial || -1,
 			description: app.short_description,
 			header: app.header_image,

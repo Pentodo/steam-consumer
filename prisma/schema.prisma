@@ -14,11 +14,12 @@ model app {
 }
 
 model app_details {
-    appid       BigInt @id
-    type        String @db.VarChar
-    price       Int
-    description String @db.VarChar
-    header      String @db.VarChar
-    background  String @db.VarChar
-    app         app    @relation(fields: [appid], references: [appid], onDelete: Cascade)
+    appid        BigInt @id
+    type         String @db.VarChar
+    release_date String @db.VarChar
+    price        Int
+    description  String @db.VarChar
+    header       String @db.VarChar
+    background   String @db.VarChar
+    app          app    @relation(fields: [appid], references: [appid], onDelete: Cascade)
 }

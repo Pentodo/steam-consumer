@@ -1,9 +1,18 @@
 import { PrismaClient } from '@prisma/client';
+import axios from 'axios';
 
 const prisma = new PrismaClient();
 
 async function main() {
-	// ... you will write your Prisma Client queries here
+	try {
+		const response = await axios.get('https://api.steampowered.com/ISteamApps/GetAppList/v2');
+		await prisma.app.createMany({
+			data: response.data.applist.apps,
+			skipDuplicates: true,
+		});
+	} catch (error: any) {
+		console.error(error.message);
+	}
 }
 
 main()

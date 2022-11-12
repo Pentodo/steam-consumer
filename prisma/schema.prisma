@@ -1,13 +1,24 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model app {
-	appid	BigInt	@id
-	name	String	@db.VarChar()
+    appid       BigInt       @id
+    name        String       @db.VarChar
+    app_details app_details?
+}
+
+model app_details {
+    appid       BigInt @id
+    type        String @db.VarChar
+    price       Int
+    description String @db.VarChar
+    header      String @db.VarChar
+    background  String @db.VarChar
+    app         app    @relation(fields: [appid], references: [appid], onDelete: Cascade)
 }

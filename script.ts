@@ -4,12 +4,31 @@ import axios from 'axios';
 const prisma = new PrismaClient();
 
 async function main() {
+	const appListUrl = 'https://api.steampowered.com/ISteamApps/GetAppList/v2';
+	const appDetailsUrl = 'http://store.steampowered.com/api/appdetails/?appids=';
+
 	try {
-		const response = await axios.get('https://api.steampowered.com/ISteamApps/GetAppList/v2');
-		await prisma.app.createMany({
-			data: response.data.applist.apps,
-			skipDuplicates: true,
-		});
+		const response = await axios.get(appListUrl);
+		const apps: Array<any> = response.data.applist.apps;
+
+		const responses = await Promise.all(
+			apps
+				.slice(0, 100)
+				.map(async (app: any) => (await axios.get(appDetailsUrl + app.appid)).data[app.appid]?.data)
+		);
+		const apps_details = responses
+			.filter((app) => app)
+			.map((app) => ({
+				appid: app.steam_appid,
+				type: app.type,
+				price: app.is_free ? 0 : app.price_overview?.initial || -1,
+				description: app.short_description,
+				header: app.header_image,
+				background: app.background,
+			}));
+
+		await prisma.app.createMany({ data: apps, skipDuplicates: true });
+		await prisma.app_details.createMany({ data: apps_details, skipDuplicates: true });
 	} catch (error: any) {
 		console.error(error.message);
 	}

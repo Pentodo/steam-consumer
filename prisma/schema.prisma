@@ -8,13 +8,13 @@ datasource db {
 }
 
 model app {
-    appid       BigInt       @id
+    appid       Int          @id
     name        String       @db.VarChar
     app_details app_details?
 }
 
 model app_details {
-    appid        BigInt @id
+    appid        Int    @id
     type         String @db.VarChar
     release_date String @db.VarChar
     price        Int

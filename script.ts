@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import axios from 'axios';
 
 const prisma = new PrismaClient();
@@ -9,18 +9,21 @@ async function main() {
 
 	try {
 		const response = await axios.get(appListUrl);
-		const apps: Array<any> = response.data.applist.apps;
+		const apps: Array<Prisma.appCreateInput> = response.data.applist.apps;
 
-		const responses = (
+		const responses: Array<any> = (
 			await Promise.all(
 				apps
 					.slice(0, 100)
 					.map(
-						async (app: any) => (await axios.get(appDetailsUrl + app.appid)).data[app.appid]?.data
+						async (app: Prisma.appCreateInput) =>
+							(
+								await axios.get(appDetailsUrl + app.appid)
+							).data[app.appid]?.data
 					)
 			)
 		).filter((app) => app);
-		const apps_details = responses.map((app) => ({
+		const apps_details: Array<any> = responses.map((app) => ({
 			appid: app.steam_appid,
 			type: app.type,
 			release_date: app.release_date.date,

@@ -11,21 +11,23 @@ async function main() {
 		const response = await axios.get(appListUrl);
 		const apps: Array<any> = response.data.applist.apps;
 
-		const responses = await Promise.all(
-			apps
-				.slice(0, 100)
-				.map(async (app: any) => (await axios.get(appDetailsUrl + app.appid)).data[app.appid]?.data)
-		);
-		const apps_details = responses
-			.filter((app) => app)
-			.map((app) => ({
-				appid: app.steam_appid,
-				type: app.type,
-				price: app.is_free ? 0 : app.price_overview?.initial || -1,
-				description: app.short_description,
-				header: app.header_image,
-				background: app.background,
-			}));
+		const responses = (
+			await Promise.all(
+				apps
+					.slice(0, 100)
+					.map(
+						async (app: any) => (await axios.get(appDetailsUrl + app.appid)).data[app.appid]?.data
+					)
+			)
+		).filter((app) => app);
+		const apps_details = responses.map((app) => ({
+			appid: app.steam_appid,
+			type: app.type,
+			price: app.is_free ? 0 : app.price_overview?.initial || -1,
+			description: app.short_description,
+			header: app.header_image,
+			background: app.background,
+		}));
 
 		await prisma.app.createMany({ data: apps, skipDuplicates: true });
 		await prisma.app_details.createMany({ data: apps_details, skipDuplicates: true });

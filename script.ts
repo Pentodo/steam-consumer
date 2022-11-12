@@ -14,7 +14,7 @@ async function main() {
 		const responses = (
 			await Promise.all(
 				apps
-					.slice(0, 250)
+					.slice(0, 100)
 					.map(
 						async (app: any) => (await axios.get(appDetailsUrl + app.appid)).data[app.appid]?.data
 					)

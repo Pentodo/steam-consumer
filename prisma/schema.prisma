@@ -11,6 +11,13 @@ model app {
     appid       Int          @id
     name        String       @db.VarChar
     app_details app_details?
+    app_genres  app_genres[]
+}
+
+model genre {
+    id          Int          @id
+    description String       @db.VarChar
+    app_genres  app_genres[]
 }
 
 model app_details {
@@ -22,4 +29,13 @@ model app_details {
     header       String @db.VarChar
     background   String @db.VarChar
     app          app    @relation(fields: [appid], references: [appid], onDelete: Cascade)
+}
+
+model app_genres {
+    appid    Int
+    genderid Int
+    app      app   @relation(fields: [appid], references: [appid], onDelete: Cascade)
+    genre    genre @relation(fields: [genderid], references: [id], onDelete: Cascade)
+
+    @@id([appid, genderid])
 }

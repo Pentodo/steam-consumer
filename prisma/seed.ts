@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma, genre, app, app_details, app_genres } from '@prisma/client';
+import { PrismaClient, genre, app, app_details, app_genres } from '@prisma/client';
 import axios from 'axios';
 
 const prisma = new PrismaClient();

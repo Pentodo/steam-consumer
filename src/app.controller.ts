@@ -27,6 +27,28 @@ export class AppController {
 		return this.prismaService.app.findMany(query);
 	}
 
+	@Get('apps/genres')
+	async getAppsGenres(@Query('appids') appids: string): Promise<app[]> {
+		const ids: Array<number> = appids.split(',').map((num) => Number(num));
+		const query: any = {
+			where: { appid: { in: ids } },
+			include: { app_genres: { select: { genderid: true } } },
+		};
+
+		// prettier-ignore
+		await this.prismaService.addAppGenres(
+			(await this.prismaService.app.findMany(query))
+				.map((app: any) => {
+					if (!app.app_genres.length) {
+						return app.appid;
+					}
+				})
+				.filter((appid) => appid)
+		);
+
+		return this.prismaService.app.findMany(query);
+	}
+
 	@Get('genres')
 	async getAllGenres(): Promise<genre[]> {
 		return this.prismaService.genre.findMany();

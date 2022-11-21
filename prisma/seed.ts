@@ -44,11 +44,15 @@ async function main() {
 			background: app.background,
 		}));
 
-		await prisma.app.createMany({ data: apps, skipDuplicates: true });
-		await prisma.genre.createMany({ data: genres, skipDuplicates: true });
+		await Promise.all([
+			prisma.app.createMany({ data: apps, skipDuplicates: true }),
+			prisma.genre.createMany({ data: genres, skipDuplicates: true }),
+		]);
 
-		await prisma.app_details.createMany({ data: apps_details, skipDuplicates: true });
-		await prisma.app_genres.createMany({ data: apps_genres, skipDuplicates: true });
+		await Promise.all([
+			prisma.app_details.createMany({ data: apps_details, skipDuplicates: true }),
+			prisma.app_genres.createMany({ data: apps_genres, skipDuplicates: true }),
+		]);
 	} catch (error: any) {
 		console.error(error.message);
 	}

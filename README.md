@@ -63,3 +63,9 @@ Você pode utilizar a API através dos seguintes "endpoints":
   - `/apps/details/?appids={appid | appid,appid...}`: busca os aplicativos de forma mais detalhada.
   - `/apps/genres/?appids={appid | appid,appid...}`: busca os aplicativos e seus gêneros.
 - `/genres`: retorna todos os gêneros.
+
+Também é possível visualizar as informações do banco de dados através do `Prisma Studio`:
+
+```
+npx prisma studio
+```

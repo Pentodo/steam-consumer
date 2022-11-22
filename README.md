@@ -50,22 +50,27 @@ Este arquivo realizará requisições HTTP à loja da Steam, preenchendo nosso b
 npm start
 ```
 
-Agora, nosso servidor está rodando em [`http://localhost:3000`](http://localhost:3000).\
-Você pode fazer requisições à API, por exemplo: [`http://localhost:3000/apps`](http://localhost:3000/apps).
+Agora, você pode fazer requisições à API, por exemplo: [http://localhost:3000/apps](http://localhost:3000/apps).
 
 ## Utilizando
 
-Você pode utilizar a API através dos seguintes "endpoints":
+### `API REST`
 
-### `GET`
+Você pode utilizar a API através dos seguintes `endpoints`:
+
+#### `GET`
 
 - `/apps`: retorna todos os aplicativos da Steam. Contém apenas o `appid` e o `name`.
   - `/apps/details/?appids={appid | appid,appid...}`: busca os aplicativos de forma mais detalhada.
   - `/apps/genres/?appids={appid | appid,appid...}`: busca os aplicativos e seus gêneros.
 - `/genres`: retorna todos os gêneros.
 
-Também é possível visualizar as informações do banco de dados através do `Prisma Studio`:
+### `Prisma Studio`
+
+Além da API, é possível visualizar o conteúdo do banco de dados através do seguinte comando:
 
 ```
 npx prisma studio
 ```
+
+Nesta interface, pode-se filtrar os dados disponíveis — sem a necessidade do servidor.

@@ -59,7 +59,7 @@ Você pode utilizar a API através dos seguintes "endpoints":
 
 ### `GET`
 
-- `/` ou `/apps`: retorna todos os aplicativos da Steam. Contém apenas o `appid` e o `name`.
+- `/apps`: retorna todos os aplicativos da Steam. Contém apenas o `appid` e o `name`.
   - `/apps/details/?appids={appid | appid,appid...}`: busca os aplicativos de forma mais detalhada.
   - `/apps/genres/?appids={appid | appid,appid...}`: busca os aplicativos e seus gêneros.
 - `/genres`: retorna todos os gêneros.

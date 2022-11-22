@@ -41,7 +41,7 @@ Use o comando abaixo para criar nosso banco no `PostgreSQL`:
 npx prisma migrate dev --name init
 ```
 
-Com isso, ele criará as entidades e seus relacionamentos — além de executar o arquivo [`prisma/seed.ts`](./prisma/seed.ts).\
+Com isso, o `Prisma` criará as entidades e seus relacionamentos — além de executar o arquivo [`prisma/seed.ts`](./prisma/seed.ts).\
 Este arquivo realizará requisições HTTP à loja da Steam, preenchendo nosso banco de dados.
 
 ### 3. Inicie o servidor REST API
@@ -50,5 +50,16 @@ Este arquivo realizará requisições HTTP à loja da Steam, preenchendo nosso b
 npm start
 ```
 
-Agora, nosso servidor está rodando em `http://localhost:3000`.\
+Agora, nosso servidor está rodando em [`http://localhost:3000`](http://localhost:3000).\
 Você pode fazer requisições à API, por exemplo: [`http://localhost:3000/apps`](http://localhost:3000/apps).
+
+## Utilizando
+
+Você pode utilizar a API através dos seguintes "endpoints":
+
+### `GET`
+
+- `/` ou `/apps`: retorna todos os aplicativos da Steam. Contém apenas o `appid` e o `name`.
+  - `/apps/details/?appids={appid | appid,appid...}`: busca os aplicativos de forma mais detalhada.
+  - `/apps/genres/?appids={appid | appid,appid...}`: busca os aplicativos e seus gêneros.
+- `/genres`: retorna todos os gêneros.

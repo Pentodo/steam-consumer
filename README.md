@@ -1,6 +1,6 @@
-# steam-consumer
+# Steam REST API
 
-Uma aplicação desenvolvida para suporte em futuras disciplinas da `UNIFEI`.\
+Uma aplicação desenvolvida para o suporte em futuras disciplinas da `UNIFEI`.\
 Com ela, será possível a criação de novos projetos que utilizarão os dados consumidos da loja Steam.
 
 ## Configuração

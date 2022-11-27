@@ -11,7 +11,7 @@ async function main() {
 	const featuredCategoriesUrl = 'https://store.steampowered.com/api/featuredcategories/?currency=BRL';
 
 	const getAppDetails = (obj: any): app_details => ({
-		appid: obj.steam_appid,
+		appid: obj.appid,
 		type: obj.type,
 		release_date: obj.release_date.date,
 		price: obj.is_free ? 0 : obj.price_overview?.initial || -1,
@@ -34,26 +34,32 @@ async function main() {
 		const apps: Array<app> = appsResponse.data.applist.apps;
 
 		const detailsResponses: Array<any> = (
-			await Promise.all(
-				apps
-					.slice(0, 100)
-					.map(async (app) => (await axios.get(appDetailsUrl + app.appid)).data[app.appid]?.data)
-			)
-		).filter((app) => app);
+			await Promise.all(apps.slice(0, 100).map((app: app) => axios.get(appDetailsUrl + app.appid)))
+		)
+			.map((response) => {
+				const appid = Object.keys(response.data)[0];
+				const app = response.data[appid]?.data;
+
+				if (app) {
+					app.appid = Number(appid);
+					return app;
+				}
+			})
+			.filter((app) => app);
 
 		const genres: Array<genre> = [];
 		const apps_genres: Array<app_genres> = [];
 
-		detailsResponses
-			.filter((app) => app.genres)
-			.forEach((app) => {
+		detailsResponses.forEach((app) => {
+			if (app.genres) {
 				app.genres.forEach((genre: any) => {
 					const id = Number(genre.id);
 
 					genres.push({ id, description: genre.description });
-					apps_genres.push({ appid: app.steam_appid, genderid: id });
+					apps_genres.push({ appid: app.appid, genderid: id });
 				});
-			});
+			}
+		});
 
 		const apps_details: Array<app_details> = detailsResponses.map(getAppDetails);
 
@@ -75,9 +81,9 @@ async function main() {
 		]);
 
 		await Promise.all([
-			prisma.sale.createMany({ data: sales, skipDuplicates: true }),
 			prisma.app_details.createMany({ data: apps_details, skipDuplicates: true }),
 			prisma.app_genres.createMany({ data: apps_genres, skipDuplicates: true }),
+			prisma.sale.createMany({ data: sales, skipDuplicates: true }),
 		]);
 	} catch (error: any) {
 		console.error(error.message);

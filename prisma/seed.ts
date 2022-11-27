@@ -1,4 +1,4 @@
-import { PrismaClient, genre, app, app_details, app_genres } from '@prisma/client';
+import { PrismaClient, app, genre, app_details, app_genres, sale } from '@prisma/client';
 import axios from 'axios';
 
 const prisma = new PrismaClient();
@@ -6,6 +6,27 @@ const prisma = new PrismaClient();
 async function main() {
 	const appListUrl = 'https://api.steampowered.com/ISteamApps/GetAppList/v2';
 	const appDetailsUrl = 'http://store.steampowered.com/api/appdetails/?appids=';
+
+	const featuredUrl = 'https://store.steampowered.com/api/featured/?currency=BRL';
+	const featuredCategoriesUrl = 'https://store.steampowered.com/api/featuredcategories/?currency=BRL';
+
+	const getAppDetails = (obj: any): app_details => ({
+		appid: obj.steam_appid,
+		type: obj.type,
+		release_date: obj.release_date.date,
+		price: obj.is_free ? 0 : obj.price_overview?.initial || -1,
+		description: obj.short_description,
+		header: obj.header_image,
+		background: obj.background,
+	});
+
+	const filterSales = (obj: any) => obj.type === 0 && obj.original_price && obj.discount_percent;
+	const getSale = (obj: any): sale => ({
+		appid: obj.id,
+		discount_percent: obj.discount_percent,
+		original_price: obj.original_price,
+		final_price: obj.final_price,
+	});
 
 	try {
 		const appsResponse = await axios.get(appListUrl);
@@ -34,15 +55,19 @@ async function main() {
 				});
 			});
 
-		const apps_details: Array<app_details> = detailsResponses.map((app) => ({
-			appid: app.steam_appid,
-			type: app.type,
-			release_date: app.release_date.date,
-			price: app.is_free ? 0 : app.price_overview?.initial || -1,
-			description: app.short_description,
-			header: app.header_image,
-			background: app.background,
-		}));
+		const apps_details: Array<app_details> = detailsResponses.map(getAppDetails);
+
+		const featuredResponses = await Promise.all([
+			axios.get(featuredUrl),
+			axios.get(featuredCategoriesUrl),
+		]);
+
+		const featured: Array<sale> = [
+			...featuredResponses[0].data.featured_win.filter(filterSales).map(getSale),
+			...featuredResponses[1].data.specials.items.filter(filterSales).map(getSale),
+		];
+
+		const sales = featured.filter((sale) => sale.original_price && sale.discount_percent);
 
 		await Promise.all([
 			prisma.app.createMany({ data: apps, skipDuplicates: true }),
@@ -50,6 +75,7 @@ async function main() {
 		]);
 
 		await Promise.all([
+			prisma.sale.createMany({ data: sales, skipDuplicates: true }),
 			prisma.app_details.createMany({ data: apps_details, skipDuplicates: true }),
 			prisma.app_genres.createMany({ data: apps_genres, skipDuplicates: true }),
 		]);

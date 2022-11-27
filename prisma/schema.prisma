@@ -12,6 +12,7 @@ model app {
     name        String       @db.VarChar
     app_details app_details?
     app_genres  app_genres[]
+    sale        sale[]
 }
 
 model genre {
@@ -38,4 +39,12 @@ model app_genres {
     genre    genre @relation(fields: [genderid], references: [id], onDelete: Cascade)
 
     @@id([appid, genderid])
+}
+
+model sale {
+    appid            Int @id
+    discount_percent Int
+    original_price   Int
+    final_price      Int
+    app              app @relation(fields: [appid], references: [appid], onDelete: Cascade)
 }

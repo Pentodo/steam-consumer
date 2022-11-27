@@ -8,7 +8,7 @@ Com ela, será possível a criação de novos projetos que utilizarão os dados 
 ### `.env`
 
 Um arquivo contendo as variáveis de ambiente deve ser criado na raíz do projeto.\
-E como é utilizado o `PostgreSQL`, é necessário configurar sua conexão:
+E como estamos utilizando o `PostgreSQL`, é necessário configurar sua conexão:
 
 ```
 DATABASE_URL="postgres://{user}:{password}@{hostname}:{port}/{database-name}?schema={schema-name}"
@@ -23,7 +23,7 @@ Troque os campos com as chaves pelo o que deseja. Obs: as chaves não fazem part
 Para baixar esta aplicação, use o comando:
 
 ```
-git clone git@github.com:Pentodo/steam-consumer.git
+git clone https://github.com/Pentodo/steam-consumer.git
 ```
 
 Depois, instale as dependências:

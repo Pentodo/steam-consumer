@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { app, genre } from '@prisma/client';
+import { app, genre, sale } from '@prisma/client';
 
 @Controller()
 export class AppController {
@@ -52,5 +52,10 @@ export class AppController {
 	@Get('genres')
 	async getAllGenres(): Promise<genre[]> {
 		return this.prismaService.genre.findMany();
+	}
+
+	@Get('sales')
+	async getAllSales(): Promise<sale[]> {
+		return this.prismaService.sale.findMany();
 	}
 }

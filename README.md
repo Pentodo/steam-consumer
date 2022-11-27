@@ -38,7 +38,7 @@ npm install
 Use o comando abaixo para criar nosso banco no `PostgreSQL`:
 
 ```
-npx prisma migrate dev --name init
+npx prisma migrate dev
 ```
 
 Com isso, o `Prisma` criará as entidades e seus relacionamentos — além de executar o arquivo [`prisma/seed.ts`](./prisma/seed.ts).\
